@@ -18,6 +18,9 @@ public class AAClient implements ClientModInitializer {
         }));
 
         Config.load();
+
+        // create file if it doesn't
+        Config.save();
     }
 
 }

@@ -17,10 +17,10 @@ public class Config {
     private static List<Entry<?>> entries = new ArrayList<>();
 
     public static Entry<Integer> FADE_IN = new Entry<>("FadeIn", 1000);
-    public static Entry<Easing> FADE_IN_EASING = new Entry<>("FadeInEasing", Easing.CUBIC_IN);
+    public static Entry<Easing> FADE_IN_EASING = new Entry<>("FadeInEasing", Easing.EXPO_IN_OUT);
 
-    public static Entry<Integer> FADE_OUT = new Entry<>("FadeOut", 1000);
-    public static Entry<Easing> FADE_OUT_EASING = new Entry<>("FadeOutEasing", Easing.CUBIC_OUT);
+    public static Entry<Integer> FADE_OUT = new Entry<>("FadeOut", 1500);
+    public static Entry<Easing> FADE_OUT_EASING = new Entry<>("FadeOutEasing", Easing.EXPO_IN_OUT);
 
     public static Entry<Integer> HOLD = new Entry<>("Hold", 2000);
 

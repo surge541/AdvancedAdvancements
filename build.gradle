@@ -6,6 +6,10 @@ plugins {
 version = project.mod_version
 group = project.maven_group
 
+configurations {
+	library
+}
+
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
@@ -18,19 +22,21 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    implementation group: 'com.github.Wolfsurge', name: 'JavaAnimationSystem', version: '1.11'
-    implementation group: 'org.json', name: 'json', version: '20230227'
+    library group: 'com.github.Wolfsurge', name: 'JavaAnimationSystem', version: '1.11'
+    library group: 'org.json', name: 'json', version: '20230227'
 
-    implementation platform("org.lwjgl:lwjgl-bom:3.3.1")
-    implementation "org.lwjgl:lwjgl-nanovg"
+    library platform("org.lwjgl:lwjgl-bom:3.3.1")
+    library "org.lwjgl:lwjgl-nanovg"
 
     // lets just include ALL the natives!
-	implementation "org.lwjgl:lwjgl-nanovg::natives-windows"
-	implementation "org.lwjgl:lwjgl-nanovg::natives-macos"
-	implementation "org.lwjgl:lwjgl-nanovg::natives-linux"
-	implementation "org.lwjgl:lwjgl-nanovg::natives-macos-arm64"
-	implementation "org.lwjgl:lwjgl-nanovg::natives-linux-arm64"
-	implementation "org.lwjgl:lwjgl-nanovg::natives-linux-arm32"
+	library "org.lwjgl:lwjgl-nanovg::natives-windows"
+	library "org.lwjgl:lwjgl-nanovg::natives-macos"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux"
+	library "org.lwjgl:lwjgl-nanovg::natives-macos-arm64"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux-arm64"
+	library "org.lwjgl:lwjgl-nanovg::natives-linux-arm32"
+
+    implementation configurations.library
 }
 
 processResources {
@@ -71,6 +77,10 @@ jar {
     from("LICENSE") {
         rename { "${it}_${project.archivesBaseName}"}
     }
+
+    duplicatesStrategy = DuplicatesStrategy.WARN
+
+    from(configurations.library.collect { if (it.isDirectory()) it else zipTree(it) })
 }
 
 publishing {
