@@ -1,0 +1,16 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "me.surge.mixins",
+    "compatibilityLevel": "JAVA_17",
+    "client": [
+        "IAdvancementToast",
+        "IDrawContext",
+        "MixinGameRenderer",
+        "MixinToastManager",
+        "MixinWindow"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+  }
+}

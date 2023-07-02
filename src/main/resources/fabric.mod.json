@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "advancedadvancements",
+  "version": "${version}",
+  "name": "AdvancedAdvancements",
+  "description": "Improved how advancements are displayed - inspired by Advancement Plaques",
+  "authors": [
+    "surge"
+  ],
+  "contact": {
+    "repo": "https://github.com/Wolfsurge/AdvancedAdvancements"
+  },
+  "license": "GPL-3.0",
+  "icon": "",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "me.surge.AAClient"
+    ]
+  },
+  "mixins": [
+    "advancedadvancements.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
