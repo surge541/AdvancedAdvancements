@@ -39,6 +39,8 @@ public class Config {
     public static Entry<Float> SCALE = new Entry<>("Scale", 1f);
     public static Entry<EntryAnimation> ENTRY_ANIMATION = new Entry<>("EntryAnimation", EntryAnimation.SCALE);
 
+    public static Entry<Integer> Y_OFFSET = new Entry<>("YOffset", 50);
+
     public static void save() {
         JSONObject json = new JSONObject();
 

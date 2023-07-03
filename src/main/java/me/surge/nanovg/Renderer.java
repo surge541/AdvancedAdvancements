@@ -39,7 +39,9 @@ public class Renderer {
     private static List<String> texturePaths = Arrays.asList(
             "task",
             "goal",
-            "challenge"
+            "challenge",
+            "flash-1",
+            "flash-2"
     );
 
     private static Map<String, Integer> textures = new HashMap<>();
@@ -84,9 +86,13 @@ public class Renderer {
     }
 
     public static void texture(String name, float x, float y, float width, float height) {
+        texture(name, x, y, width, height, 1f);
+    }
+
+    public static void texture(String name, float x, float y, float width, float height, float alpha) {
         NVGPaint paint = NVGPaint.calloc();
 
-        nvgImagePattern(handle, x, y, width, height, 0, textures.get(name), 1f, paint);
+        nvgImagePattern(handle, x, y, width, height, 0, textures.get(name), alpha, paint);
 
         nvgBeginPath(handle);
         nvgRect(handle, x, y, width, height);

@@ -58,7 +58,7 @@ public abstract class AdvancedToast {
             factor = (float) fadeOut.getAnimationFactor();
         }
 
-        float y = Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SLIDE) ? -toastHeight + ((50 + toastHeight) * factor) : 50;
+        float y = Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SLIDE) ? -toastHeight + ((Config.Y_OFFSET.getValue() + toastHeight) * factor) : Config.Y_OFFSET.getValue();
 
         float finalFactor = factor;
 
@@ -66,6 +66,10 @@ public abstract class AdvancedToast {
             // scale intro
             if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE)) {
                 scale(finalFactor, x + (toastWidth / 2), y + (toastHeight / 2));
+            } else if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.FLASH)) {
+                if (!(fadeIn.getAnimationFactor() > 0.5 || hold.getState()) || fadeOut.getAnimationFactor() < 0.5 && !fadeOut.getState()) {
+                    return;
+                }
             }
 
             // background texture
@@ -89,6 +93,26 @@ public abstract class AdvancedToast {
 
     public abstract Background getBackground();
     public abstract ItemStack getIcon();
+
+    public Animation getFadeIn() {
+        return fadeIn;
+    }
+
+    public Animation getHold() {
+        return hold;
+    }
+
+    public Animation getScissor() {
+        return scissor;
+    }
+
+    public Animation getFadeOut() {
+        return fadeOut;
+    }
+
+    public Color getMessageColour() {
+        return messageColour;
+    }
 
     public static class Data {
 

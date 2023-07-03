@@ -6,5 +6,6 @@ package me.surge.config;
  */
 public enum EntryAnimation {
     SCALE,
-    SLIDE
+    SLIDE,
+    FLASH
 }
