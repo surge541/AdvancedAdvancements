@@ -2,10 +2,11 @@ package me.surge.toasts;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import me.surge.config.Config;
+import me.surge.config.EntryAnimation;
 import me.surge.mixins.IDrawContext;
+import me.surge.duck.DDrawContext;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.toast.RecipeToast;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.math.MathHelper;
@@ -37,10 +38,26 @@ public class AdvancedToastManager {
 
             float mcScale = MinecraftClient.getInstance().options.getGuiScale().getValue();
 
-            // scale
-            context.getMatrices().translate((data.getToastX() + (data.getToastWidth() / 2)) / mcScale, (data.getToastY() + (data.getToastHeight() / 2)) / mcScale, 200.0);
-            context.getMatrices().scale(data.getFactor(), data.getFactor(), data.getFactor());
-            context.getMatrices().translate(-((data.getToastX() + (data.getToastWidth() / 2)) / mcScale), -((data.getToastY() + (data.getToastHeight() / 2)) / mcScale), -200.0);
+            // scale animation
+            {
+                if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE)) {
+                    context.getMatrices()
+                           .translate(
+                                   (data.getToastX() + (data.getToastWidth() / 2)) / mcScale,
+                                   (data.getToastY() + (data.getToastHeight() / 2)) / mcScale,
+                                   200.0
+                           );
+
+                    context.getMatrices().scale(data.getFactor(), data.getFactor(), data.getFactor());
+
+                    context.getMatrices()
+                           .translate(
+                                   -((data.getToastX() + (data.getToastWidth() / 2)) / mcScale),
+                                   -((data.getToastY() + (data.getToastHeight() / 2)) / mcScale),
+                                   -200.0
+                           );
+                }
+            }
 
             float scale = 1f / mcScale;
             context.getMatrices().scale(scale, scale, scale);
@@ -55,17 +72,43 @@ public class AdvancedToastManager {
 
             offset *= configScale;
 
-            context.getMatrices().translate(((int) (data.getToastX() + offset)), ((data.getToastY() + (16 * configScale))), 200.0);
-            context.getMatrices().scale(2, 2, 2);
-            context.getMatrices().translate(-(((data.getToastX() + offset))), -(((data.getToastY() + (16 * configScale)))), -200.0);
+            // scale to normal size
+            {
+                context.getMatrices().translate(
+                        ((int) (data.getToastX() + offset)),
+                        ((data.getToastY() + (16 * configScale))),
+                        200.0
+                );
 
-            context.getMatrices().translate(((int) (data.getToastX() + offset)), ((data.getToastY() + (16 * configScale))), 200.0);
-            context.getMatrices().scale(configScale, configScale, configScale);
-            context.getMatrices().translate(-(((data.getToastX() + offset))), -(((data.getToastY() + (16 * configScale)))), -200.0);
+                context.getMatrices().scale(2, 2, 2);
 
-            RenderSystem.setShaderColor(1f, 1f, 1f, data.getFactor());
+                context.getMatrices().translate(
+                        -(((data.getToastX() + offset))),
+                        -(((data.getToastY() + (16 * configScale)))),
+                        -200.0
+                );
+            }
 
-            context.drawItemWithoutEntity(toast.getIcon(), (int) (data.getToastX() + offset), (int) (data.getToastY() + (16 * configScale)));
+            // scale to config size
+            {
+                context.getMatrices().translate(
+                        ((int) (data.getToastX() + offset)),
+                        ((data.getToastY() + (16 * configScale))),
+                        200.0
+                );
+
+                context.getMatrices().scale(configScale, configScale, configScale);
+
+                context.getMatrices().translate(
+                        -(((data.getToastX() + offset))),
+                        -(((data.getToastY() + (16 * configScale)))),
+                        -200.0
+                );
+            }
+
+            RenderSystem.setShaderColor(1f, 1f, 1f, Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE) ? data.getFactor() : 1);
+
+            ((DDrawContext) context).drawItemWithoutEntityF(toast.getIcon(), (int) (data.getToastX() + offset), (int) (data.getToastY() + (16 * (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE) ? configScale : 1))));
 
             ((IDrawContext) context).setMatrices(stack);
 

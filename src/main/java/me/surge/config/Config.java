@@ -4,8 +4,10 @@ import me.surge.animation.Easing;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.awt.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class Config {
     public static Entry<String> MESSAGE = new Entry<>("MessageColour", "#808080");
 
     public static Entry<Float> SCALE = new Entry<>("Scale", 1f);
+    public static Entry<EntryAnimation> ENTRY_ANIMATION = new Entry<>("EntryAnimation", EntryAnimation.SCALE);
 
     public static void save() {
         JSONObject json = new JSONObject();

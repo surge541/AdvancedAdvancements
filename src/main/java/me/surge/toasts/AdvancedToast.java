@@ -2,6 +2,7 @@ package me.surge.toasts;
 
 import me.surge.animation.Animation;
 import me.surge.config.Config;
+import me.surge.config.EntryAnimation;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.item.ItemStack;
 
@@ -22,6 +23,8 @@ public abstract class AdvancedToast {
     private Animation scissor = null;
     private Animation fadeOut = null;
 
+    private final Color messageColour = Color.decode(Config.MESSAGE.getValue());
+
     public Data draw(DrawContext context, int width, int height) {
         // these are only initialised here so that config reloading actually has an effect if there are many
         // advancements in the queue
@@ -38,7 +41,6 @@ public abstract class AdvancedToast {
         float toastHeight = (32 * 2) * scaleFactor;
 
         float x = (width / 2f) - (toastWidth / 2f);
-        float y = 50;
 
         float factor = (float) fadeIn.getAnimationFactor();
 
@@ -56,18 +58,22 @@ public abstract class AdvancedToast {
             factor = (float) fadeOut.getAnimationFactor();
         }
 
+        float y = Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SLIDE) ? -toastHeight + ((50 + toastHeight) * factor) : 50;
+
         float finalFactor = factor;
 
         frame(() -> {
             // scale intro
-            scale(finalFactor, x + (toastWidth / 2), y + (toastHeight / 2));
+            if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE)) {
+                scale(finalFactor, x + (toastWidth / 2), y + (toastHeight / 2));
+            }
 
             // background texture
             texture(this.getBackground().name().toLowerCase(), x, y, toastWidth, toastHeight);
 
             // title and name
             text(this.getTitle(), x + (72 * scaleFactor), y + (20 * scaleFactor), this.getTitleColour(), 16 * scaleFactor);
-            text(this.getMessage(), x + (76 * scaleFactor), y + (40 * scaleFactor), Color.GRAY, 12 * scaleFactor);
+            text(this.getMessage(), x + (76 * scaleFactor), y + (40 * scaleFactor), messageColour, 12 * scaleFactor);
         });
 
         return new Data(factor, x, y, toastWidth, toastHeight);

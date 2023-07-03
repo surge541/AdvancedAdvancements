@@ -7,11 +7,12 @@
         "IAdvancementToast",
         "IDrawContext",
         "IRecipeToast",
+        "MixinDrawContext",
         "MixinGameRenderer",
         "MixinToastManager",
         "MixinWindow"
     ],
     "injectors": {
         "defaultRequire": 1
-  }
+    }
 }
