@@ -4,6 +4,7 @@ import me.surge.animation.Easing;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.awt.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,9 @@ public class Config {
 
     private static List<Entry<?>> entries = new ArrayList<>();
 
+    public static Entry<Boolean> ADVANCEMENTS = new Entry<>("Advancements", true);
+    public static Entry<Boolean> RECIPES = new Entry<>("Recipes", true);
+
     public static Entry<Integer> FADE_IN = new Entry<>("FadeIn", 1000);
     public static Entry<Easing> FADE_IN_EASING = new Entry<>("FadeInEasing", Easing.EXPO_IN_OUT);
 
@@ -27,6 +31,8 @@ public class Config {
     public static Entry<String> TASK = new Entry<>("TaskColour", "#55FF55");
     public static Entry<String> GOAL = new Entry<>("GoalColour", "#55FF55");
     public static Entry<String> CHALLENGE = new Entry<>("ChallengeColour", "#AA00AA");
+    public static Entry<String> RECIPES_COLOUR = new Entry<>("RecipesColour", "#FFA500");
+    public static Entry<String> MESSAGE = new Entry<>("MessageColour", "#808080");
 
     public static Entry<Float> SCALE = new Entry<>("Scale", 1f);
 
@@ -78,6 +84,8 @@ public class Config {
                     ((Entry<String>) entry).setValue(json.getString(entry.getName()));
                 } else if (entry.getValue() instanceof Enum<?>) {
                     ((Entry<Enum<?>>) entry).setValue(Enum.valueOf(((Enum) entry.getValue()).getDeclaringClass(), json.getString(entry.getName())));
+                } else if (entry.getValue() instanceof Boolean) {
+                    ((Entry<Boolean>) entry).setValue(json.getBoolean(entry.getName()));
                 }
             });
         } catch (Exception e) {

@@ -1,49 +1,26 @@
 package me.surge.toasts;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import me.surge.animation.Animation;
 import me.surge.config.Config;
-import net.minecraft.advancement.Advancement;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.item.ItemStack;
 
 import java.awt.*;
 
 import static me.surge.animation.Easing.LINEAR;
 import static me.surge.nanovg.Renderer.*;
+import static me.surge.nanovg.Renderer.text;
 
 /**
  * @author surge
- * @since 02/07/2023
+ * @since 03/07/2023
  */
-public class AdvancedToast {
-
-    private final Advancement advancement;
+public abstract class AdvancedToast {
 
     private Animation fadeIn = null;
     private Animation hold = null;
     private Animation scissor = null;
     private Animation fadeOut = null;
-
-    private final String title;
-    private final Color colour;
-
-    public AdvancedToast(Advancement advancement) {
-        this.advancement = advancement;
-
-        title = switch (advancement.getDisplay().getFrame()) {
-            case TASK -> "Task completed!";
-            case CHALLENGE -> "Challenge completed!";
-            case GOAL -> "Goal completed!";
-        };
-
-        colour = Color.decode(switch (advancement.getDisplay().getFrame()) {
-            case TASK -> Config.TASK.getValue();
-            case CHALLENGE -> Config.CHALLENGE.getValue();
-            case GOAL -> Config.GOAL.getValue();
-        });
-    }
 
     public Data draw(DrawContext context, int width, int height) {
         // these are only initialised here so that config reloading actually has an effect if there are many
@@ -86,23 +63,26 @@ public class AdvancedToast {
             scale(finalFactor, x + (toastWidth / 2), y + (toastHeight / 2));
 
             // background texture
-            texture(this.advancement.getDisplay().getFrame().name().toLowerCase(), x, y, toastWidth, toastHeight);
+            texture(this.getBackground().name().toLowerCase(), x, y, toastWidth, toastHeight);
 
             // title and name
-            text(this.title, x + (72 * scaleFactor), y + (20 * scaleFactor), colour, 16 * scaleFactor);
-            text(this.advancement.getDisplay().getTitle().getString(), x + (76 * scaleFactor), y + (40 * scaleFactor), Color.GRAY, 12 * scaleFactor);
+            text(this.getTitle(), x + (72 * scaleFactor), y + (20 * scaleFactor), this.getTitleColour(), 16 * scaleFactor);
+            text(this.getMessage(), x + (76 * scaleFactor), y + (40 * scaleFactor), Color.GRAY, 12 * scaleFactor);
         });
 
         return new Data(factor, x, y, toastWidth, toastHeight);
     }
 
-    public Advancement getAdvancement() {
-        return advancement;
-    }
-
     public boolean finished() {
         return fadeIn.getAnimationFactor() == 1.0 && fadeIn.getState() && fadeOut.getAnimationFactor() == 0.0 && !fadeOut.getState();
     }
+
+    public abstract String getTitle();
+    public abstract Color getTitleColour();
+    public abstract String getMessage();
+
+    public abstract Background getBackground();
+    public abstract ItemStack getIcon();
 
     public static class Data {
 
@@ -145,6 +125,12 @@ public class AdvancedToast {
             return toastHeight;
         }
 
+    }
+
+    public enum Background {
+        TASK,
+        GOAL,
+        CHALLENGE
     }
 
 }

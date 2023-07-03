@@ -6,6 +6,7 @@
     "client": [
         "IAdvancementToast",
         "IDrawContext",
+        "IRecipeToast",
         "MixinGameRenderer",
         "MixinToastManager",
         "MixinWindow"
