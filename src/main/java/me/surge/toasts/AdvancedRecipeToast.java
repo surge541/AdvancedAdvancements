@@ -4,10 +4,12 @@ import com.google.common.collect.Lists;
 import me.surge.animation.Animation;
 import me.surge.animation.Easing;
 import me.surge.config.Config;
+import me.surge.registry.ARegistries;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
+import net.minecraft.sound.SoundEvent;
 
 import java.awt.*;
 import java.util.List;
@@ -19,7 +21,7 @@ import java.util.List;
 public class AdvancedRecipeToast extends AdvancedToast {
 
     private final List<Recipe<?>> recipes = Lists.newArrayList();
-    private final Color titleColour = Color.decode(Config.RECIPES_COLOUR.getValue());
+    private final Color titleColour = Color.decode(Config.RECIPES_COLOUR.get());
 
     private Animation cycle;
     private int index = 0;
@@ -55,14 +57,14 @@ public class AdvancedRecipeToast extends AdvancedToast {
         }
 
         if (cycle == null) {
-            cycle = new Animation((float) Config.HOLD.getValue() / this.recipes.size(), false, Easing.LINEAR);
+            cycle = new Animation((float) Config.HOLD.get() / this.recipes.size(), false, Easing.LINEAR);
         }
 
         cycle.setState(true);
 
         if (cycle.getAnimationFactor() == 1.0) {
             // *weeps*
-            cycle = new Animation((float) Config.HOLD.getValue() / this.recipes.size(), false, Easing.LINEAR);
+            cycle = new Animation((float) Config.HOLD.get() / this.recipes.size(), false, Easing.LINEAR);
 
             index++;
         }
@@ -72,6 +74,11 @@ public class AdvancedRecipeToast extends AdvancedToast {
         }
 
         return recipes.get(this.index).getOutput(MinecraftClient.getInstance().world.getRegistryManager());
+    }
+
+    @Override
+    public SoundEvent getSound() {
+        return ARegistries.GOAL.value();
     }
 
 }

@@ -1,11 +1,7 @@
 package me.surge.nanovg;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.texture.TextureManager;
-import net.minecraft.item.ItemStack;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.nanovg.NVGColor;
 import org.lwjgl.nanovg.NVGPaint;
@@ -40,8 +36,7 @@ public class Renderer {
             "task",
             "goal",
             "challenge",
-            "flash-1",
-            "flash-2"
+            "flash"
     );
 
     private static Map<String, Integer> textures = new HashMap<>();
@@ -50,7 +45,7 @@ public class Renderer {
         handle = nvgCreate(NVG_ANTIALIAS);
 
         try {
-            font = getResourceBytes("/font/minecraftia.ttf", 1024);
+            font = getResourceBytes("/assets/advancedadvancements/font/minecraftia.ttf", 1024);
             nvgCreateFontMem(handle, "minecraftia", font, 0);
         } catch (IOException e) {
             e.printStackTrace();
@@ -58,7 +53,7 @@ public class Renderer {
 
         texturePaths.forEach(path -> {
             try {
-                textures.put(path, nvgCreateImageMem(handle, NVG_IMAGE_NEAREST, getResourceBytes("/texture/" + path + ".png", 512)));
+                textures.put(path, nvgCreateImageMem(handle, NVG_IMAGE_NEAREST, getResourceBytes("/assets/advancedadvancements/texture/" + path + ".png", 512)));
             } catch (IOException e) {
                 e.printStackTrace();
             }

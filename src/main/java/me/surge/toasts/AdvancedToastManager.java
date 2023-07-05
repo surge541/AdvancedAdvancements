@@ -43,7 +43,7 @@ public class AdvancedToastManager {
 
             // scale animation
             {
-                if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE)) {
+                if (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SCALE)) {
                     context.getMatrices()
                            .translate(
                                    (data.getToastX() + (data.getToastWidth() / 2)) / mcScale,
@@ -65,7 +65,7 @@ public class AdvancedToastManager {
             float scale = 1f / mcScale;
             context.getMatrices().scale(scale, scale, scale);
 
-            float configScale = Config.SCALE.getValue();
+            float configScale = Config.SCALE.get();
 
             float offset = 16;
 
@@ -109,7 +109,7 @@ public class AdvancedToastManager {
                 );
             }
 
-            RenderSystem.setShaderColor(1f, 1f, 1f, Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE) ? data.getFactor() : 1);
+            RenderSystem.setShaderColor(1f, 1f, 1f, Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SCALE) ? data.getFactor() : 1);
 
             float factor;
 
@@ -120,8 +120,8 @@ public class AdvancedToastManager {
             }
 
             // if it isn't broken, don't fix it!
-            if (!Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.FLASH) || !(!(toast.getFadeIn().getAnimationFactor() > 0.5 || toast.getHold().getState()) || toast.getFadeOut().getAnimationFactor() < 0.5 && !toast.getFadeOut().getState())) {
-                ((DDrawContext) context).drawItemWithoutEntityF(toast.getIcon(), (int) (data.getToastX() + offset), (int) (data.getToastY() + (16 * (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE) ? configScale : 1))));
+            if (!Config.ENTRY_ANIMATION.get().equals(EntryAnimation.FLASH) || !(!(toast.getFadeIn().getAnimationFactor() > 0.5 || toast.getHold().getState()) || toast.getFadeOut().getAnimationFactor() < 0.5 && !toast.getFadeOut().getState())) {
+                ((DDrawContext) context).drawItemWithoutEntityF(toast.getIcon(), (int) (data.getToastX() + offset), (int) (data.getToastY() + (16 * (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SCALE) ? configScale : 1))));
             }
 
             ((IDrawContext) context).setMatrices(stack);
@@ -131,9 +131,9 @@ public class AdvancedToastManager {
             RenderSystem.disableBlend();
             RenderSystem.disableDepthTest();
 
-            if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.FLASH)) {
+            if (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.FLASH)) {
                 // render flash overlay
-                frame(() -> Renderer.texture("flash-1", data.getToastX() - 2, data.getToastY() - 2, data.getToastWidth() + 4, data.getToastHeight() + 4, factor));
+                frame(() -> Renderer.texture("flash", data.getToastX() - 2, data.getToastY() - 2, data.getToastWidth() + 4, data.getToastHeight() + 4, factor));
             }
 
             if (toast.finished()) {

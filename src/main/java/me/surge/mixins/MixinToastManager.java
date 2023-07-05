@@ -2,8 +2,6 @@ package me.surge.mixins;
 
 import me.surge.config.Config;
 import me.surge.toasts.AdvancedAdvancementToast;
-import me.surge.toasts.AdvancedRecipeToast;
-import me.surge.toasts.AdvancedToast;
 import me.surge.toasts.AdvancedToastManager;
 import net.minecraft.client.toast.AdvancementToast;
 import net.minecraft.client.toast.RecipeToast;
@@ -23,14 +21,14 @@ public class MixinToastManager {
 
     @Inject(method = "add", at = @At("HEAD"), cancellable = true)
     public void hookAdd(Toast toast, CallbackInfo ci) {
-        if (toast instanceof AdvancementToast && Config.ADVANCEMENTS.getValue()) {
+        if (toast instanceof AdvancementToast && Config.ADVANCEMENTS.get()) {
             AdvancedToastManager.add(new AdvancedAdvancementToast(((IAdvancementToast) toast).getAdvancement()));
 
             // prevent normal handling
             ci.cancel();
         }
 
-        if (toast instanceof RecipeToast && Config.RECIPES.getValue()) {
+        if (toast instanceof RecipeToast && Config.RECIPES.get()) {
             AdvancedToastManager.queueRecipe(((IRecipeToast) toast).getRecipes());
 
             // prevent normal handling

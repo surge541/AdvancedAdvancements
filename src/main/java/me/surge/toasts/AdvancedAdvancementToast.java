@@ -1,8 +1,11 @@
 package me.surge.toasts;
 
 import me.surge.config.Config;
+import me.surge.registry.ARegistries;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 
 import java.awt.*;
 
@@ -17,6 +20,8 @@ public class AdvancedAdvancementToast extends AdvancedToast {
     private final String title;
     private final Color titleColour;
 
+    private final SoundEvent sound;
+
     public AdvancedAdvancementToast(Advancement advancement) {
         this.advancement = advancement;
 
@@ -27,10 +32,16 @@ public class AdvancedAdvancementToast extends AdvancedToast {
         };
 
         titleColour = Color.decode(switch (advancement.getDisplay().getFrame()) {
-            case TASK -> Config.TASK.getValue();
-            case CHALLENGE -> Config.CHALLENGE.getValue();
-            case GOAL -> Config.GOAL.getValue();
+            case TASK -> Config.TASK.get();
+            case CHALLENGE -> Config.CHALLENGE.get();
+            case GOAL -> Config.GOAL.get();
         });
+
+        sound = switch (advancement.getDisplay().getFrame()) {
+            case TASK -> ARegistries.TASK.value();
+            case CHALLENGE -> SoundEvents.UI_TOAST_CHALLENGE_COMPLETE;
+            case GOAL -> ARegistries.GOAL.value();
+        };
     }
 
     @Override
@@ -56,6 +67,11 @@ public class AdvancedAdvancementToast extends AdvancedToast {
     @Override
     public ItemStack getIcon() {
         return this.advancement.getDisplay().getIcon();
+    }
+
+    @Override
+    public SoundEvent getSound() {
+        return sound;
     }
 
 }

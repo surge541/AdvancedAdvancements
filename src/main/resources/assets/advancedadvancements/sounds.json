@@ -1,0 +1,18 @@
+{
+    "goal_complete": {
+        "sounds": [
+            {
+                "name": "advancedadvancements:goal_complete",
+                "volume": 0.6
+            }
+        ]
+    },
+    "task_complete": {
+        "sounds": [
+            {
+                "name": "advancedadvancements:task_complete",
+                "volume": 0.6
+            }
+        ]
+    }
+}

@@ -17,34 +17,36 @@ import java.util.List;
  */
 public class Config {
 
-    private static List<Entry<?>> entries = new ArrayList<>();
+    public static final List<Entry<?>> entries = new ArrayList<>();
 
-    public static Entry<Boolean> ADVANCEMENTS = new Entry<>("Advancements", true);
-    public static Entry<Boolean> RECIPES = new Entry<>("Recipes", true);
+    public static final Entry<Boolean> ADVANCEMENTS = new Entry<>("Advancements", true);
+    public static final Entry<Boolean> RECIPES = new Entry<>("Recipes", true);
 
-    public static Entry<Integer> FADE_IN = new Entry<>("FadeIn", 1000);
-    public static Entry<Easing> FADE_IN_EASING = new Entry<>("FadeInEasing", Easing.EXPO_IN_OUT);
+    public static final Entry<Integer> FADE_IN = new Entry<>("FadeIn", 1000);
+    public static final Entry<Easing> FADE_IN_EASING = new Entry<>("FadeInEasing", Easing.EXPO_IN_OUT);
 
-    public static Entry<Integer> FADE_OUT = new Entry<>("FadeOut", 1500);
-    public static Entry<Easing> FADE_OUT_EASING = new Entry<>("FadeOutEasing", Easing.EXPO_IN_OUT);
+    public static final Entry<Integer> FADE_OUT = new Entry<>("FadeOut", 1500);
+    public static final Entry<Easing> FADE_OUT_EASING = new Entry<>("FadeOutEasing", Easing.EXPO_IN_OUT);
 
-    public static Entry<Integer> HOLD = new Entry<>("Hold", 2000);
+    public static final Entry<Integer> HOLD = new Entry<>("Hold", 2000);
 
-    public static Entry<String> TASK = new Entry<>("TaskColour", "#55FF55");
-    public static Entry<String> GOAL = new Entry<>("GoalColour", "#55FF55");
-    public static Entry<String> CHALLENGE = new Entry<>("ChallengeColour", "#AA00AA");
-    public static Entry<String> RECIPES_COLOUR = new Entry<>("RecipesColour", "#FFA500");
-    public static Entry<String> MESSAGE = new Entry<>("MessageColour", "#808080");
+    public static final Entry<String> TASK = new Entry<>("TaskColour", "#55FF55");
+    public static final Entry<String> GOAL = new Entry<>("GoalColour", "#55FF55");
+    public static final Entry<String> CHALLENGE = new Entry<>("ChallengeColour", "#AA00AA");
+    public static final Entry<String> RECIPES_COLOUR = new Entry<>("RecipesColour", "#FFA500");
+    public static final Entry<String> MESSAGE = new Entry<>("MessageColour", "#808080");
 
-    public static Entry<Float> SCALE = new Entry<>("Scale", 1f);
-    public static Entry<EntryAnimation> ENTRY_ANIMATION = new Entry<>("EntryAnimation", EntryAnimation.SCALE);
+    public static final Entry<Float> SCALE = new Entry<>("Scale", 1f);
+    public static final Entry<EntryAnimation> ENTRY_ANIMATION = new Entry<>("EntryAnimation", EntryAnimation.FLASH);
 
-    public static Entry<Integer> Y_OFFSET = new Entry<>("YOffset", 50);
+    public static final Entry<Integer> Y_OFFSET = new Entry<>("YOffset", 50);
+
+    public static final Entry<Boolean> MUTE = new Entry<>("Mute", false);
 
     public static void save() {
         JSONObject json = new JSONObject();
 
-        entries.forEach(entry -> json.put(entry.getName(), entry.getValue()));
+        entries.forEach(entry -> json.put(entry.getName(), entry.get()));
 
         try {
             File dir = new File("config");
@@ -81,16 +83,16 @@ public class Config {
             JSONObject json = new JSONObject(new JSONTokener(new FileInputStream("config/advanced-advancements.json")));
 
             entries.forEach(entry -> {
-                if (entry.getValue() instanceof Integer) {
-                    ((Entry<Integer>) entry).setValue(json.getInt(entry.getName()));
-                } else if (entry.getValue() instanceof Float) {
-                    ((Entry<Float>) entry).setValue(json.getFloat(entry.getName()));
-                } else if (entry.getValue() instanceof String) {
-                    ((Entry<String>) entry).setValue(json.getString(entry.getName()));
-                } else if (entry.getValue() instanceof Enum<?>) {
-                    ((Entry<Enum<?>>) entry).setValue(Enum.valueOf(((Enum) entry.getValue()).getDeclaringClass(), json.getString(entry.getName())));
-                } else if (entry.getValue() instanceof Boolean) {
-                    ((Entry<Boolean>) entry).setValue(json.getBoolean(entry.getName()));
+                if (entry.get() instanceof Integer) {
+                    ((Entry<Integer>) entry).set(json.getInt(entry.getName()));
+                } else if (entry.get() instanceof Float) {
+                    ((Entry<Float>) entry).set(json.getFloat(entry.getName()));
+                } else if (entry.get() instanceof String) {
+                    ((Entry<String>) entry).set(json.getString(entry.getName()));
+                } else if (entry.get() instanceof Enum<?>) {
+                    ((Entry<Enum<?>>) entry).set(Enum.valueOf(((Enum) entry.get()).getDeclaringClass(), json.getString(entry.getName())));
+                } else if (entry.get() instanceof Boolean) {
+                    ((Entry<Boolean>) entry).set(json.getBoolean(entry.getName()));
                 }
             });
         } catch (Exception e) {
@@ -114,11 +116,11 @@ public class Config {
             return name;
         }
 
-        public T getValue() {
+        public T get() {
             return value;
         }
 
-        public void setValue(T value) {
+        public void set(T value) {
             this.value = value;
         }
 

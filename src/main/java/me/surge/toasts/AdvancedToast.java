@@ -3,8 +3,11 @@ package me.surge.toasts;
 import me.surge.animation.Animation;
 import me.surge.config.Config;
 import me.surge.config.EntryAnimation;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.item.ItemStack;
+import net.minecraft.sound.SoundEvent;
 
 import java.awt.*;
 
@@ -23,19 +26,21 @@ public abstract class AdvancedToast {
     private Animation scissor = null;
     private Animation fadeOut = null;
 
-    private final Color messageColour = Color.decode(Config.MESSAGE.getValue());
+    private boolean played;
+
+    private final Color messageColour = Color.decode(Config.MESSAGE.get());
 
     public Data draw(DrawContext context, int width, int height) {
         // these are only initialised here so that config reloading actually has an effect if there are many
         // advancements in the queue
         if (fadeIn == null) {
-            fadeIn = new Animation(Config.FADE_IN.getValue(), false, Config.FADE_IN_EASING.getValue());
-            hold = new Animation(Config.HOLD.getValue(), false, LINEAR);
-            scissor = new Animation(Config.HOLD.getValue() / 2f, false, LINEAR);
-            fadeOut = new Animation(Config.FADE_OUT.getValue(), true, Config.FADE_OUT_EASING.getValue());
+            fadeIn = new Animation(Config.FADE_IN.get(), false, Config.FADE_IN_EASING.get());
+            hold = new Animation(Config.HOLD.get(), false, LINEAR);
+            scissor = new Animation(Config.HOLD.get() / 2f, false, LINEAR);
+            fadeOut = new Animation(Config.FADE_OUT.get(), true, Config.FADE_OUT_EASING.get());
         }
 
-        float scaleFactor = Config.SCALE.getValue();
+        float scaleFactor = Config.SCALE.get();
 
         float toastWidth = (255 * 2) * scaleFactor;
         float toastHeight = (32 * 2) * scaleFactor;
@@ -58,15 +63,15 @@ public abstract class AdvancedToast {
             factor = (float) fadeOut.getAnimationFactor();
         }
 
-        float y = Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SLIDE) ? -toastHeight + ((Config.Y_OFFSET.getValue() + toastHeight) * factor) : Config.Y_OFFSET.getValue();
+        float y = Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SLIDE) ? -toastHeight + ((Config.Y_OFFSET.get() + toastHeight) * factor) : Config.Y_OFFSET.get();
 
         float finalFactor = factor;
 
         frame(() -> {
             // scale intro
-            if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.SCALE)) {
+            if (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SCALE)) {
                 scale(finalFactor, x + (toastWidth / 2), y + (toastHeight / 2));
-            } else if (Config.ENTRY_ANIMATION.getValue().equals(EntryAnimation.FLASH)) {
+            } else if (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.FLASH)) {
                 if (!(fadeIn.getAnimationFactor() > 0.5 || hold.getState()) || fadeOut.getAnimationFactor() < 0.5 && !fadeOut.getState()) {
                     return;
                 }
@@ -79,6 +84,14 @@ public abstract class AdvancedToast {
             text(this.getTitle(), x + (72 * scaleFactor), y + (20 * scaleFactor), this.getTitleColour(), 16 * scaleFactor);
             text(this.getMessage(), x + (76 * scaleFactor), y + (40 * scaleFactor), messageColour, 12 * scaleFactor);
         });
+
+        if (!played) {
+            played = true;
+
+            if (!Config.MUTE.get() && this.getSound() != null) {
+                MinecraftClient.getInstance().getSoundManager().play(PositionedSoundInstance.master(this.getSound(), 1f));
+            }
+        }
 
         return new Data(factor, x, y, toastWidth, toastHeight);
     }
@@ -112,6 +125,10 @@ public abstract class AdvancedToast {
 
     public Color getMessageColour() {
         return messageColour;
+    }
+
+    public SoundEvent getSound() {
+        return null;
     }
 
     public static class Data {

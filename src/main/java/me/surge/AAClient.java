@@ -2,6 +2,7 @@ package me.surge;
 
 import me.surge.config.Config;
 import me.surge.nanovg.Renderer;
+import me.surge.registry.ARegistries;
 import net.fabricmc.api.ClientModInitializer;
 
 /**
@@ -21,6 +22,8 @@ public class AAClient implements ClientModInitializer {
 
         // create file if it doesn't
         Config.save();
+
+        ARegistries.register();
     }
 
 }
