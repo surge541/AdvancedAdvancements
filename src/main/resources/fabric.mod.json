@@ -11,7 +11,7 @@
     "repo": "https://github.com/Wolfsurge/AdvancedAdvancements"
   },
   "license": "GPL-3.0",
-  "icon": "",
+  "icon": "assets/advancedadvancements/texture/logo.png",
   "environment": "client",
   "entrypoints": {
     "client": [
