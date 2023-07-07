@@ -8,10 +8,14 @@ import me.surge.duck.DDrawContext;
 import me.surge.nanovg.Renderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.util.math.MathHelper;
 
+import java.awt.*;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -119,10 +123,12 @@ public class AdvancedToastManager {
                 factor = 1 - data.getFactor();
             }
 
-            // if it isn't broken, don't fix it!
-            if (!Config.ENTRY_ANIMATION.get().equals(EntryAnimation.FLASH) || !(!(toast.getFadeIn().getAnimationFactor() > 0.5 || toast.getHold().getState()) || toast.getFadeOut().getAnimationFactor() < 0.5 && !toast.getFadeOut().getState())) {
-                ((DDrawContext) context).drawItemWithoutEntityF(toast.getIcon(), (int) (data.getToastX() + offset), (int) (data.getToastY() + (16 * (Config.ENTRY_ANIMATION.get().equals(EntryAnimation.SCALE) ? configScale : 1))));
-            }
+            // The context behind this *atrocity* is that it can cause Z-fighting in some GUIs.
+            // I assume some GL state is being changed which does that, but I can't for the life
+            // of me figure out what it is. So, for now, it stays.
+            boolean visible = (!Config.ENTRY_ANIMATION.get().equals(EntryAnimation.FLASH) || !(!(toast.getFadeIn().getAnimationFactor() > 0.5 || toast.getHold().getState()) || toast.getFadeOut().getAnimationFactor() < 0.5 && !toast.getFadeOut().getState()));
+
+            ((DDrawContext) context).drawItemWithoutEntityF(toast.getIcon(), visible ? ((int) (data.getToastX() + offset)) : -10000, (int) (data.getToastY() + (16 * configScale)));
 
             ((IDrawContext) context).setMatrices(stack);
 
@@ -135,6 +141,8 @@ public class AdvancedToastManager {
                 // render flash overlay
                 frame(() -> Renderer.texture("flash", data.getToastX() - 2, data.getToastY() - 2, data.getToastWidth() + 4, data.getToastHeight() + 4, factor));
             }
+
+            DiffuseLighting.enableGuiDepthLighting();
 
             if (toast.finished()) {
                 toastQueue.poll();

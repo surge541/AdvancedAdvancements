@@ -24,7 +24,7 @@ public class MixinGameRenderer {
 
     @Shadow @Final private BufferBuilderStorage buffers;
 
-    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;render(Lnet/minecraft/client/gui/DrawContext;F)V", shift = At.Shift.AFTER))
+    @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;draw()V", shift = At.Shift.AFTER))
     public void hookRender(float tickDelta, long startTime, boolean tick, CallbackInfo ci) {
         if (MinecraftClient.getInstance().world != null) {
             Window window = MinecraftClient.getInstance().getWindow();
